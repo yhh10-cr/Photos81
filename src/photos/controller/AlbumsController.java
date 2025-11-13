@@ -1,5 +1,5 @@
 package photos.controller;
-
+import photos.controller.AlbumController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -7,7 +7,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import photos.Photos;
 import photos.model.Album;
@@ -157,16 +160,33 @@ public class AlbumsController {
         Photos.saveUserData();
     }
 
+    /**
+     * Open the selected album in the album view.
+     */
     @FXML
     private void handleOpenAlbum() {
+        if (user == null) return;
+
         Album selected = albumTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
             showError("Select an album to open.");
             return;
         }
 
-        // TODO: later load album-view FXML (photos inside album)
-        System.out.println("Opening album: " + selected.getName());
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/photos/view/album.fxml"));
+            Parent root = loader.load();
+
+            AlbumController controller = loader.getController();
+            controller.setContext(user, selected);
+
+            Stage stage = (Stage) albumTable.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace(); // later: show an Alert
+        }
     }
 
     @FXML

@@ -27,12 +27,6 @@ public class User implements Serializable {
     /** All albums belonging to this user. */
     private final List<Album> albums = new ArrayList<>();
 
-    /**
-     * Constructs a User with the given username.
-     *
-     * @param username non-null, non-blank username
-     * @throws IllegalArgumentException if username is null/blank
-     */
     public User(String username) {
         if (username == null || username.isBlank()) {
             throw new IllegalArgumentException("Username cannot be null or blank");
@@ -40,26 +34,14 @@ public class User implements Serializable {
         this.username = username.trim();
     }
 
-    /**
-     * @return the username for this user.
-     */
     public String getUsername() {
         return username;
     }
 
-    /**
-     * @return unmodifiable view of this user's albums.
-     */
     public List<Album> getAlbums() {
         return Collections.unmodifiableList(albums);
     }
 
-    /**
-     * Finds an album by name (case-insensitive).
-     *
-     * @param name album name to search for
-     * @return Album if found, otherwise null
-     */
     public Album getAlbum(String name) {
         if (name == null) return null;
         String target = name.trim().toLowerCase();
@@ -71,32 +53,18 @@ public class User implements Serializable {
         return null;
     }
 
-    /**
-     * Creates and adds a new album with the given name.
-     * Fails if an album with the same name (case-insensitive) already exists.
-     *
-     * @param albumName name for the new album
-     * @return the created Album, or null if duplicate / invalid name
-     */
     public Album createAlbum(String albumName) {
         if (albumName == null || albumName.isBlank()) {
             return null;
         }
         if (getAlbum(albumName) != null) {
-            // Duplicate album name for this user
-            return null;
+            return null; // duplicate
         }
         Album album = new Album(albumName);
         albums.add(album);
         return album;
     }
 
-    /**
-     * Deletes the album with the given name, if it exists.
-     *
-     * @param albumName name of the album to delete
-     * @return true if the album was found and removed
-     */
     public boolean deleteAlbum(String albumName) {
         Album album = getAlbum(albumName);
         if (album == null) {
@@ -105,16 +73,6 @@ public class User implements Serializable {
         return albums.remove(album);
     }
 
-    /**
-     * Renames an existing album.
-     * Fails if:
-     *  - source album doesn't exist, or
-     *  - another album already uses the new name (case-insensitive).
-     *
-     * @param oldName current album name
-     * @param newName desired new name
-     * @return true if rename succeeded
-     */
     public boolean renameAlbum(String oldName, String newName) {
         if (newName == null || newName.isBlank()) {
             return false;
@@ -125,19 +83,15 @@ public class User implements Serializable {
             return false;
         }
 
-        // Check uniqueness of newName
         Album conflict = getAlbum(newName);
         if (conflict != null && conflict != album) {
-            return false; // another album already has this name
+            return false; // someone else already has that name
         }
 
         album.setName(newName);
         return true;
     }
 
-    /**
-     * Users are considered equal if their usernames match (case-insensitive).
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

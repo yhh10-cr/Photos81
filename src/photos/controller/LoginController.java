@@ -1,5 +1,5 @@
 package photos.controller;
-
+import photos.controller.AlbumsController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,8 +11,6 @@ import javafx.stage.Stage;
 import photos.Photos;
 import photos.model.User;
 import photos.model.UserManager;
-
-import java.io.IOException;
 
 /**
  * Controller for the login screen.
@@ -31,7 +29,6 @@ public class LoginController {
 
     @FXML
     private void initialize() {
-        // Clear error on load
         showError("");
     }
 
@@ -60,7 +57,7 @@ public class LoginController {
             // Admin goes to admin management screen
             goToAdminScreen();
         } else {
-            // Normal user will later go to albums screen
+            // Normal user goes to albums screen
             goToUserScreen(user);
         }
 
@@ -82,14 +79,23 @@ public class LoginController {
         }
     }
 
-    /**
-     * Switch to normal user screen (albums view).
-     * For now this is just a placeholder so the app still runs;
-     * we will replace it once the user albums UI is implemented.
-     */
+    /** Switch to the normal user albums screen. */
     private void goToUserScreen(User user) {
-        // TODO: load user albums FXML and pass the User
-        System.out.println("Logged in as non-admin user: " + user.getUsername());
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/photos/view/albums.fxml"));
+            Parent root = loader.load();
+
+            // Get controller and pass the User
+            AlbumsController controller = loader.getController();
+            controller.setUser(user);
+
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace(); // later replace with an Alert in GUI
+        }
     }
 
     private void showError(String msg) {

@@ -2,6 +2,9 @@ package photos.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -9,8 +12,12 @@ import photos.Photos;
 import photos.model.User;
 import photos.model.UserManager;
 
+import java.io.IOException;
+
 /**
  * Controller for the login screen.
+ *
+ * Handles logging in as either the admin user or a normal user.
  *
  * @author Youssef, Srimaan
  */
@@ -21,6 +28,12 @@ public class LoginController {
 
     @FXML
     private Label errorLabel;
+
+    @FXML
+    private void initialize() {
+        // Clear error on load
+        showError("");
+    }
 
     @FXML
     private void handleLogin(ActionEvent event) {
@@ -41,19 +54,45 @@ public class LoginController {
             return;
         }
 
-        // At this point login is successful.
-        // Next step (future pieces): switch to admin or user view.
-        // For now we just clear any error.
         showError("");
 
-        // TODO: replace with actual scene switching once admin/user views exist.
-        System.out.println("Logged in as: " + user.getUsername());
+        if (username.equalsIgnoreCase("admin")) {
+            // Admin goes to admin management screen
+            goToAdminScreen();
+        } else {
+            // Normal user will later go to albums screen
+            goToUserScreen(user);
+        }
 
-        // Optional: save data before switching screens
         Photos.saveUserData();
     }
 
+    /** Switch to the admin user management screen. */
+    private void goToAdminScreen() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/photos/view/admin.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace(); // later replace with an Alert in GUI
+        }
+    }
+
+    /**
+     * Switch to normal user screen (albums view).
+     * For now this is just a placeholder so the app still runs;
+     * we will replace it once the user albums UI is implemented.
+     */
+    private void goToUserScreen(User user) {
+        // TODO: load user albums FXML and pass the User
+        System.out.println("Logged in as non-admin user: " + user.getUsername());
+    }
+
     private void showError(String msg) {
-        errorLabel.setText(msg);
+        errorLabel.setText(msg == null ? "" : msg);
     }
 }

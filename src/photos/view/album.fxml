@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="photos.controller.AlbumController">
+
+    <!-- Top: album name + back -->
+    <top>
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <children>
+                <Label fx:id="albumLabel"
+                       text="Album"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"
+                       HBox.hgrow="ALWAYS"/>
+                <Button text="Back to Albums" onAction="#handleBack"/>
+            </children>
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+        </HBox>
+    </top>
+
+    <!-- Left: list of photos -->
+    <left>
+        <VBox spacing="5">
+            <children>
+                <Label text="Photos"/>
+                <ListView fx:id="photoListView"
+                          prefWidth="220"
+                          prefHeight="350"/>
+            </children>
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+        </VBox>
+    </left>
+
+    <!-- Center: selected photo + caption/date/tags -->
+    <center>
+        <VBox spacing="10">
+            <children>
+                <ImageView fx:id="photoImageView"
+                           fitWidth="400"
+                           fitHeight="300"
+                           preserveRatio="true"
+                           smooth="true"/>
+
+                <Label fx:id="dateLabel" text="Date:"/>
+
+                <HBox spacing="5" alignment="CENTER_LEFT">
+                    <children>
+                        <Label text="Caption:"/>
+                        <TextField fx:id="captionField" promptText="Photo caption" prefWidth="250"/>
+                        <Button text="Save Caption" onAction="#handleSaveCaption"/>
+                    </children>
+                </HBox>
+
+                <Label text="Tags"/>
+                <ListView fx:id="tagListView" prefHeight="100"/>
+
+                <HBox spacing="5">
+                    <children>
+                        <TextField fx:id="tagNameField" promptText="tag type (e.g. person)" prefWidth="140"/>
+                        <TextField fx:id="tagValueField" promptText="tag value (e.g. Alice)" prefWidth="140"/>
+                        <Button text="Add Tag" onAction="#handleAddTag"/>
+                        <Button text="Delete Tag" onAction="#handleDeleteTag"/>
+                    </children>
+                </HBox>
+
+                <Label fx:id="errorLabel" textFill="red"/>
+            </children>
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+        </VBox>
+    </center>
+
+    <!-- Bottom: basic photo operations (more later: copy/move/search/slideshow) -->
+    <bottom>
+        <HBox spacing="10" alignment="CENTER">
+            <children>
+                <Button text="Add Photo" onAction="#handleAddPhoto"/>
+                <Button text="Remove Selected" onAction="#handleRemovePhoto"/>
+                <!-- TODO: later add Copy, Move, Slideshow, Search buttons -->
+            </children>
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+        </HBox>
+    </bottom>
+
+</BorderPane>
